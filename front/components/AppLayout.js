@@ -4,7 +4,7 @@ import { Menu, Input, Row, Col } from "antd";
 import PropTypes from "prop-types";
 import styled from "styled-components";
 
-import userProfile from "../components/userProfile";
+import UserProfile from "../components/UserProfile";
 import LoginForm from "../components/LoginForm";
 
 const SearchInput = styled(Input.Search)`
@@ -43,7 +43,11 @@ const AppLayout = ({ children }) => {
         {/*xs인 24가 전체이다. 따라서 md에서는 25%만 차지하겠다는 의미*/}
         {/*만약 Col 2개를 같이 가로로 두고 싶으면 두 Col의 xs 합을 24 이하로 둬야한다.*/}
         <Col xs={24} md={6}>
-          {isLoggedIn ? <userProfile /> : <LoginForm />}
+          {isLoggedIn ? (
+            <UserProfile setIsLoggedIn={setIsLoggedIn} />
+          ) : (
+            <LoginForm setIsLoggedIn={setIsLoggedIn} />
+          )}
         </Col>
         <Col xs={24} md={12}>
           {children}

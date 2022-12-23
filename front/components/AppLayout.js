@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import Link from "next/link";
 import { Menu, Input, Row, Col } from "antd";
 import PropTypes from "prop-types";
-import styled from "styled-components";
+import styled, { createGlobalStyle } from "styled-components";
 import { useSelector } from "react-redux";
 
 import UserProfile from "../components/UserProfile";
@@ -12,12 +12,28 @@ const SearchInput = styled(Input.Search)`
   vertical-align: middle;
 `;
 
+const Global = createGlobalStyle`
+  .ant-row {
+    margin-right: 0 !important;
+    margin-left: 0 !important;
+  }
+  
+  .ant-col:first-child {
+      padding-left: 0 !important;
+  }
+  
+  .ant-col:last-child {
+    padding-right: 0 !important;
+  }
+`;
+
 // 모든 페이지에서 공통인 것은 _app.js에 넣고, 특정 컴포넌트끼리 공통인 것은 AppLayout.js에 넣는다.
 const AppLayout = ({ children }) => {
   const { isLoggedIn } = useSelector((state) => state.user);
 
   return (
     <div>
+      <Global />
       <Menu mode="horizontal">
         <Menu.Item>
           <Link href="/">

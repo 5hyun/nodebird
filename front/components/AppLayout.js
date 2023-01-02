@@ -29,7 +29,7 @@ const Global = createGlobalStyle`
 
 // 모든 페이지에서 공통인 것은 _app.js에 넣고, 특정 컴포넌트끼리 공통인 것은 AppLayout.js에 넣는다.
 const AppLayout = ({ children }) => {
-  const { isLoggedIn } = useSelector((state) => state.user);
+  const { me } = useSelector((state) => state.user);
 
   return (
     <div>
@@ -60,7 +60,7 @@ const AppLayout = ({ children }) => {
         {/*xs인 24가 전체이다. 따라서 md에서는 25%만 차지하겠다는 의미*/}
         {/*만약 Col 2개를 같이 가로로 두고 싶으면 두 Col의 xs 합을 24 이하로 둬야한다.*/}
         <Col xs={24} md={6}>
-          {isLoggedIn ? <UserProfile /> : <LoginForm />}
+          {me ? <UserProfile /> : <LoginForm />}
         </Col>
         <Col xs={24} md={12}>
           {children}

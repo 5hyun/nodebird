@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import { Form, Input, Checkbox, Button } from "antd";
 import PropTypes from "prop-types";
 
@@ -6,6 +6,7 @@ import AppLayout from "../components/AppLayout";
 import useInput from "../hooks/useInput";
 import { SIGN_UP_REQUEST } from "../reducers/user";
 import { useDispatch, useSelector } from "react-redux";
+import { Router } from "next/router";
 
 const TextInput = ({ value }) => {
   return <div>{value}</div>;
@@ -17,7 +18,21 @@ TextInput.propTypes = {
 
 const Signup = () => {
   const dispatch = useDispatch();
-  const { signUpLoading } = useSelector((state) => state.user);
+  const { signUpLoading, signUpDone, signUpError } = useSelector(
+    (state) => state.user
+  );
+
+  useEffect(() => {
+    if (signUpDone) {
+      Router.push("/");
+    }
+  }, [signUpDone]);
+
+  useEffect(() => {
+    if (signUpError) {
+      alert(signUpError);
+    }
+  }, [signUpError]);
 
   const [passwordCheck, setPasswordCheck] = useState("");
   const [term, setTerm] = useState(false);
@@ -25,7 +40,7 @@ const Signup = () => {
   const [termError, setTermError] = useState(false);
 
   const [email, onChangeEmail] = useInput("");
-  const [nick, onChangeNick] = useInput("");
+  const [nickname, onChangeNickname] = useInput("");
   const [password, onChangePassword] = useInput("");
 
   const onSubmit = useCallback(() => {
@@ -71,13 +86,13 @@ const Signup = () => {
           />
         </div>
         <div>
-          <label htmlFor="user-nick">닉네임</label>
+          <label htmlFor="user-nickname">닉네임</label>
           <br />
           <Input
-            name="user-nick"
-            value={nick}
+            name="user-nickname"
+            value={nickname}
             required
-            onChange={onChangeNick}
+            onChange={onChangeNickname}
           />
         </div>
         <div>

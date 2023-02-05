@@ -1,12 +1,16 @@
 const express = require("express");
 const bcrypt = require("bcrypt");
 const passport = require("passport");
+
 const { User, Post } = require("../models");
+const { isLoggedIn, isNotLoggedIn } = require("./middlewares");
 
 const router = express.Router();
 
 // options에 done의 값이 전달된다.
-router.post("/login", (req, res, next) => {
+// 로그인은 로그인 안한 사람들이 해야해서 isNotLoggedIn
+// next()는 다음 미들웨어로 가는데 isNotLoggedIn의 다음 미들웨어는 (req, res, next)... 이것이다.
+router.post("/login", isNotLoggedIn, (req, res, next) => {
   passport.authenticate(
     "local",
     // 미들웨어 확장
@@ -57,7 +61,8 @@ router.post("/login", (req, res, next) => {
   )(req, res, next);
 });
 
-router.post("/", async (req, res, next) => {
+// 회원가입도 로그인 안한 사람들이 해서 isNotLoggedIn
+router.post("/", isNotLoggedIn, async (req, res, next) => {
   try {
     const exUser = await User.findOne({
       where: {
@@ -82,7 +87,8 @@ router.post("/", async (req, res, next) => {
   }
 });
 
-router.post("/logout", (req, res) => {
+// 로그아웃은 로그인 한 사람만 할 수 있어서 isLoggedIn
+router.post("/logout", isLoggedIn, (req, res) => {
   req.logout();
   req.session.destroy();
   res.send("ok");

@@ -1,6 +1,9 @@
 import { all, fork } from "redux-saga/effects";
+import axios from "axios";
 import postSaga from "./post";
 import userSaga from "./user";
+
+axios.defaults.baseURL = "http://localhost:3065";
 
 //thunk에서는 비동기 actionCreator을 직접 실행했지만 saga에서는 비동기 actionCreator가 이벤트 리스너 같은 역할을 한다.
 

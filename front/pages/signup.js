@@ -6,7 +6,7 @@ import AppLayout from "../components/AppLayout";
 import useInput from "../hooks/useInput";
 import { SIGN_UP_REQUEST } from "../reducers/user";
 import { useDispatch, useSelector } from "react-redux";
-import { Router } from "next/router";
+import { Router, useRouter } from "next/router";
 
 const TextInput = ({ value }) => {
   return <div>{value}</div>;
@@ -18,13 +18,22 @@ TextInput.propTypes = {
 
 const Signup = () => {
   const dispatch = useDispatch();
-  const { signUpLoading, signUpDone, signUpError } = useSelector(
+  const { signUpLoading, signUpDone, signUpError, me } = useSelector(
     (state) => state.user
   );
 
+  const router = useRouter();
+
+  useEffect(() => {
+    if (me && me.id) {
+      // push는 뒤로가기 하면 이전 페이지로 가는데, replace는 이전 페이지가 사라진다.
+      router.replace("/");
+    }
+  }, [me && me.id]);
+
   useEffect(() => {
     if (signUpDone) {
-      Router.push("/");
+      router.replace("/");
     }
   }, [signUpDone]);
 

@@ -20,20 +20,18 @@ import {
 
 function logInAPI(data) {
   // 이런식으로 로그인 요청을 보낼 수 있다.
-  return axios.post("/api/login", data);
+  return axios.post("/user/login", data);
 }
 
 function* logIn(action) {
   try {
     //  call을 사용하면 특이하게 인수를 펼쳐줘야한다.
     //  로그인 요청의 결과값
-    // const result = yield call(logInAPI, action.data);
+    const result = yield call(logInAPI, action.data);
 
-    //  서버가 없을때 사용하는 임시 코드, 비동기라 더미 데이터 같은 효과를 줄 수 있다.
-    yield delay(1000);
     yield put({
       type: LOG_IN_SUCCESS,
-      data: action.data,
+      data: result.data,
     });
   } catch (err) {
     //  put는 dispatch라고 생각하면된다.
@@ -45,7 +43,7 @@ function* logIn(action) {
 }
 
 function signUpAPI(data) {
-  return axios.post("http://localhost:3065/user", data);
+  return axios.post("/user", data);
 }
 
 function* signUp(action) {
@@ -104,13 +102,12 @@ function* unfollow(action) {
 }
 
 function logOutAPI() {
-  return axios.post("/api/logout");
+  return axios.post("/user/logout");
 }
 
 function* logOut() {
   try {
-    // const result = yield call(logOutAPI);
-    yield delay(1000);
+    yield call(logOutAPI);
     yield put({
       type: LOG_OUT_SUCCESS,
     });

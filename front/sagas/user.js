@@ -4,6 +4,9 @@ import {
   FOLLOW_FAILURE,
   FOLLOW_REQUEST,
   FOLLOW_SUCCESS,
+  LOAD_MY_INFO_FAILURE,
+  LOAD_MY_INFO_REQUEST,
+  LOAD_MY_INFO_SUCCESS,
   LOG_IN_FAILURE,
   LOG_IN_REQUEST,
   LOG_IN_SUCCESS,
@@ -18,22 +21,39 @@ import {
   UNFOLLOW_SUCCESS,
 } from "../reducers/user";
 
+function loadUserAPI() {
+  return axios.get("/user");
+}
+
+function* loadUser(action) {
+  try {
+    const result = yield call(loadUserAPI, action.data);
+    yield put({
+      type: LOAD_MY_INFO_SUCCESS,
+      data: result.data,
+    });
+  } catch (err) {
+    yield put({
+      type: LOAD_MY_INFO_FAILURE,
+      error: err.response.data,
+    });
+  }
+}
+
 function logInAPI(data) {
   // 이런식으로 로그인 요청을 보낼 수 있다.
-  return axios.post("/api/login", data);
+  return axios.post("/user/login", data);
 }
 
 function* logIn(action) {
   try {
     //  call을 사용하면 특이하게 인수를 펼쳐줘야한다.
     //  로그인 요청의 결과값
-    // const result = yield call(logInAPI, action.data);
+    const result = yield call(logInAPI, action.data);
 
-    //  서버가 없을때 사용하는 임시 코드, 비동기라 더미 데이터 같은 효과를 줄 수 있다.
-    yield delay(1000);
     yield put({
       type: LOG_IN_SUCCESS,
-      data: action.data,
+      data: result.data,
     });
   } catch (err) {
     //  put는 dispatch라고 생각하면된다.
@@ -140,6 +160,10 @@ function* watchLogOut() {
   yield takeLatest(LOG_OUT_REQUEST, logOut);
 }
 
+function* watchLoadUser() {
+  yield takeLatest(LOAD_MY_INFO_REQUEST, loadUser);
+}
+
 function* watchFollow() {
   yield takeLatest(FOLLOW_REQUEST, follow);
 }
@@ -150,6 +174,7 @@ function* watchUnfollow() {
 
 export default function* userSaga() {
   yield all([
+    fork(watchLoadUser),
     fork(watchFollow),
     fork(watchUnfollow),
     fork(watchLogIn),

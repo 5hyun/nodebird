@@ -7,6 +7,42 @@ const { isLoggedIn, isNotLoggedIn } = require("./middlewares");
 
 const router = express.Router();
 
+router.get("/", async (req, res, next) => {
+  try {
+    if (req.user) {
+      const fullUserWithoutPassword = await User.findOne({
+        where: { id: req.user.id },
+        // 원하는 정보만 가져와줌
+        attributes: {
+          exclude: ["password"],
+        },
+        include: [
+          {
+            model: Post,
+            attributes: ["id"],
+          },
+          {
+            model: User,
+            as: "Followings",
+            attributes: ["id"],
+          },
+          {
+            model: User,
+            as: "Followers",
+            attributes: ["id"],
+          },
+        ],
+      });
+      res.status(200).json(fullUserWithoutPassword);
+    } else {
+      res.status(200).json(null);
+    }
+  } catch (error) {
+    console.error(error);
+    next(error);
+  }
+});
+
 // options에 done의 값이 전달된다.
 // 로그인은 로그인 안한 사람들이 해야해서 isNotLoggedIn
 // next()는 다음 미들웨어로 가는데 isNotLoggedIn의 다음 미들웨어는 (req, res, next)... 이것이다.
@@ -43,14 +79,17 @@ router.post("/login", isNotLoggedIn, (req, res, next) => {
             include: [
               {
                 model: Post,
+                attributes: ["id"],
               },
               {
                 model: User,
                 as: "Followings",
+                attributes: ["id"],
               },
               {
                 model: User,
                 as: "Followers",
+                attributes: ["id"],
               },
             ],
           });

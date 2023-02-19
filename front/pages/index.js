@@ -51,8 +51,10 @@ const Home = () => {
         // loadPostsLoading: 데이터를 추가적으로 불러오고 있는 상황인지
         // 맨 아래에서 300px 위 지점에서는 스크롤 이벤트가 여러번 가게 되는데 데이터를 추가적으로 불러오고 있는 상황이면 또 불러와서는 안된다.
         if (hasMorePosts && !loadPostsLoading) {
+          const lastId = mainPosts[mainPosts.length - 1]?.id;
           dispatch({
             type: LOAD_POSTS_REQUEST,
+            lastId,
           });
         }
       }
@@ -63,7 +65,7 @@ const Home = () => {
     return () => {
       window.removeEventListener("scroll", onScroll);
     };
-  }, [hasMorePosts, loadPostsLoading]);
+  }, [hasMorePosts, loadPostsLoading, mainPosts]);
 
   return (
     <AppLayout>

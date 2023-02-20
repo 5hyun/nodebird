@@ -43,6 +43,48 @@ router.get("/", async (req, res, next) => {
   }
 });
 
+router.get("/:userId", async (req, res, next) => {
+  try {
+    const fullUserWithoutPassword = await User.findOne({
+      where: { id: req.params.userId },
+      // 원하는 정보만 가져와줌
+      attributes: {
+        exclude: ["password"],
+      },
+      include: [
+        {
+          model: Post,
+          attributes: ["id"],
+        },
+        {
+          model: User,
+          as: "Followings",
+          attributes: ["id"],
+        },
+        {
+          model: User,
+          as: "Followers",
+          attributes: ["id"],
+        },
+      ],
+    });
+    if (fullUserWithoutPassword) {
+      // 시퀄라이즈에서 받아온 정보는 json이 아님
+      const data = fullUserWithoutPassword.toJSON();
+      // 남의 정보를 보여줄 때는 개인 정보 보호를 위해 length를 리턴해준다.
+      data.Posts = data.Posts.length;
+      data.Followers = data.Followers.length;
+      data.Followings = data.Followings.length;
+      res.status(200).json(fullUserWithoutPassword);
+    } else {
+      res.status(404).json("존재하지 않는 사용자입니다.");
+    }
+  } catch (error) {
+    console.error(error);
+    next(error);
+  }
+});
+
 // options에 done의 값이 전달된다.
 // 로그인은 로그인 안한 사람들이 해야해서 isNotLoggedIn
 // next()는 다음 미들웨어로 가는데 isNotLoggedIn의 다음 미들웨어는 (req, res, next)... 이것이다.

@@ -9,6 +9,7 @@ const path = require("path");
 const postRouter = require("./routes/post");
 const postsRouter = require("./routes/posts");
 const userRouter = require("./routes/user");
+const hashtagRouter = require("./routes/hashtag");
 const db = require("./models");
 const passportConfig = require("./passport");
 const passport = require("passport");
@@ -52,6 +53,7 @@ app.get("/", (req, res) => {
 app.use("/posts", postsRouter);
 app.use("/post", postRouter);
 app.use("/user", userRouter);
+app.use("/hashtag", hashtagRouter);
 
 // 에러 처리 미들웨어를 따로 만들어 주고 싶으면 이런식으로 만들면 된다.
 // app.use((err, req, res, next) => {});

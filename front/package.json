@@ -5,18 +5,21 @@
   "main": "index.js",
   "scripts": {
     "dev": "next -p 3060",
-    "build": "next build",
-    "start": "next start"
+    "build": "cross-env NODE_ENV=production ANALYZE=true next build",
+    "start": "cross-env NODE_ENV=production next start -p 3060"
   },
   "author": "ZeroCho",
   "license": "MIT",
   "dependencies": {
     "@ant-design/icons": "^4.8.0",
+    "@next/bundle-analyzer": "^13.1.6",
     "antd": "^4.2.5",
     "axios": "^1.2.2",
     "babel-plugin-styled-components": "^2.0.7",
     "child_process": "^1.0.2",
+    "cross-env": "^7.0.3",
     "immer": "^9.0.17",
+    "moment": "^2.29.4",
     "next": "^9.1.0",
     "next-redux-wrapper": "^6.0.2",
     "prop-types": "^15.7.2",

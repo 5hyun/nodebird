@@ -2,6 +2,7 @@ import React, { useCallback } from "react";
 import { Card, Avatar, Button } from "antd";
 import { useDispatch, useSelector } from "react-redux";
 import { logoutRequestAction } from "../reducers/user";
+import Link from "next/link";
 
 const UserProfile = () => {
   const dispatch = useDispatch();
@@ -15,20 +16,32 @@ const UserProfile = () => {
     <Card
       // 리엑트에서 배열로 jsx 쓸 때는 key를 붙어야 함
       actions={[
-        <div key={"twit"}>
-          짹짹
-          <br />
-          {me.Posts.length}
+        <div key="twit">
+          <Link href={`/user/${me.id}`}>
+            <a>
+              짹짹
+              <br />
+              {me.Posts.length}
+            </a>
+          </Link>
         </div>,
-        <div key={"followings"}>
-          팔로잉
-          <br />
-          {me.Followings.length}
+        <div key="followings">
+          <Link href="/profile">
+            <a>
+              팔로잉
+              <br />
+              {me.Followings.length}
+            </a>
+          </Link>
         </div>,
-        <div key={"followers"}>
-          팔로워
-          <br />
-          {me.Followers.length}
+        <div key="followings">
+          <Link href="/profile">
+            <a>
+              팔로워
+              <br />
+              {me.Followers.length}
+            </a>
+          </Link>
         </div>,
       ]}
     >

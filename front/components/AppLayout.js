@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useCallback, useState } from "react";
 import Link from "next/link";
 import { Menu, Input, Row, Col } from "antd";
 import PropTypes from "prop-types";
@@ -7,6 +7,8 @@ import { useSelector } from "react-redux";
 
 import UserProfile from "../components/UserProfile";
 import LoginForm from "../components/LoginForm";
+import useInput from "../hooks/useInput";
+import { Router } from "next/router";
 
 const SearchInput = styled(Input.Search)`
   vertical-align: middle;
@@ -30,6 +32,11 @@ const Global = createGlobalStyle`
 // 모든 페이지에서 공통인 것은 _app.js에 넣고, 특정 컴포넌트끼리 공통인 것은 AppLayout.js에 넣는다.
 const AppLayout = ({ children }) => {
   const { me } = useSelector((state) => state.user);
+  const [searchInput, onChangeSearchInput] = useInput("");
+
+  const onSearch = useCallback(() => {
+    Router.push(`/hashtag/${searchInput}`);
+  }, [searchInput]);
 
   return (
     <div>
@@ -46,12 +53,12 @@ const AppLayout = ({ children }) => {
           </Link>
         </Menu.Item>
         <Menu.Item>
-          <SearchInput enterButton />
-        </Menu.Item>
-        <Menu.Item>
-          <Link href="/signup">
-            <a>회원가입</a>
-          </Link>
+          <SearchInput
+            enterButton
+            value={searchInput}
+            onChange={onChangeSearchInput}
+            onSearch={onSearch}
+          />
         </Menu.Item>
       </Menu>
       {/*컬럼 사이에 간격을 주는 것이 gutter*/}

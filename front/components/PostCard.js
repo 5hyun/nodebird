@@ -9,6 +9,8 @@ import {
   EllipsisOutlined,
   HeartTwoTone,
 } from "@ant-design/icons";
+import Link from "next/link";
+import moment from "moment";
 
 import PostImages from "./PostImages";
 import CommentForm from "./CommentForm";
@@ -20,8 +22,7 @@ import {
   RETWEET_REQUEST,
 } from "../reducers/post";
 import FollowButton from "./FollowButton";
-import Link from "next/link";
-import moment from "moment";
+
 moment.locale("ko");
 
 const PostCard = ({ post }) => {
@@ -72,7 +73,7 @@ const PostCard = ({ post }) => {
     });
   }, [id]);
 
-  const liked = post.Likers.find((v) => v.id === id);
+  const liked = post.Likers?.find((v) => v.id === id);
   return (
     <div style={{ marginBottom: 20 }}>
       <Card

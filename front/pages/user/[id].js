@@ -16,10 +16,10 @@ const User = () => {
   const dispatch = useDispatch();
   const router = useRouter();
   const { id } = router.query;
-  const { mainPosts, hasMorePosts, loadPostsLoading } = useSelector(
+  const { mainPosts, hasMorePosts, loadUserPostsLoading } = useSelector(
     (state) => state.post
   );
-  const { userInfo, me } = useSelector((state) => state.user);
+  const { userInfo } = useSelector((state) => state.user);
 
   useEffect(() => {
     const onScroll = () => {
@@ -27,7 +27,7 @@ const User = () => {
         window.pageYOffset + document.documentElement.clientHeight >
         document.documentElement.scrollHeight - 300
       ) {
-        if (hasMorePosts && !loadPostsLoading) {
+        if (hasMorePosts && !loadUserPostsLoading) {
           dispatch({
             type: LOAD_USER_POSTS_REQUEST,
             lastId:
@@ -42,7 +42,7 @@ const User = () => {
     return () => {
       window.removeEventListener("scroll", onScroll);
     };
-  }, [mainPosts.length, hasMorePosts, id, loadPostsLoading]);
+  }, [mainPosts.length, hasMorePosts, id]);
 
   return (
     <AppLayout>
@@ -71,9 +71,8 @@ const User = () => {
           <meta property="og:url" content={`https://nodebird.com/user/${id}`} />
         </Head>
       )}
-      {userInfo && userInfo.id !== me?.id ? (
+      {userInfo ? (
         <Card
-          style={{ marginBottom: 20 }}
           actions={[
             <div key="twit">
               짹짹
@@ -98,8 +97,8 @@ const User = () => {
           />
         </Card>
       ) : null}
-      {mainPosts.map((c) => (
-        <PostCard key={c.id} post={c} />
+      {mainPosts.map((post) => (
+        <PostCard key={post.id} post={post} />
       ))}
     </AppLayout>
   );
@@ -125,6 +124,8 @@ export const getServerSideProps = wrapper.getServerSideProps(
     });
     context.store.dispatch(END);
     await context.store.sagaTask.toPromise();
+    console.log("getState", context.store.getState().post.mainPosts);
+    return { props: {} };
   }
 );
 
